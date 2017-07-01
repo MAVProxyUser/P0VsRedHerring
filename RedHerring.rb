@@ -94,6 +94,9 @@ end
 trap 'INT' do server.shutdown end
 
 # This is not working... fix it... 
+# Debug with:
+# while true; do adb pull /ftp/upgrade/data_copy.bin data_copy.bin; done
+
 system("rm bug.tar")
 system("rm -rf symlink")
 system("echo 'get root' > anything.txt")
