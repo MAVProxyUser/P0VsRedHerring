@@ -1,8 +1,12 @@
+#!/usr/bin/ruby
 # Independence Day - http://www.imdb.com/title/tt0116629/
 # https://www.youtube.com/watch?v=bhGfpwfae-k
 #
 # Thx to DarkSimpson for the reminder on something I considered banging out last month... 
 # https://twitter.com/thedjiproblem/status/881290409149943810 
+#
+# Freaky123, you already know you are sexy... no thanks needed (except for the root!)
+# https://www.youtube.com/watch?v=QYHxGBH6o4M
 #
 # This technique requires 50% battery or more present! 
 #
@@ -13,8 +17,8 @@
 #  You ain't cut from it
 #  You dig?" - https://genius.com/Snoop-dogg-neva-left-lyrics
 #
-# To be clear 99% of the people saying "we" in this scene have NOTHING to do with the real work being done. 
-# These Darwin Awards waiting to happen are NOT doing anything but parroting info others leak to them
+# To be clear 99% of the people saying "we" in this "DJI Jailbreaking / Unlocking" scene have NOTHING to do with the real work being done. 
+# These Darwin Awards waiting to happen are NOT doing anything but parroting info others leak to them, don't be fooled
 # https://www.facebook.com/groups/DjiJailbreak/  <---- NO Affiliation! 
 # 
 # Lets examine POV's claims and red herrings. I've been chasing them for over a month or so... They make complete sense now. 
@@ -27,14 +31,12 @@
 # https://git.busybox.net/busybox/commit/?id=a116552869db5e7793ae10968eb3c962c69b3d8c
 # "tar: add a note about -C and symlink-in-tarball attack Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>"
 #
-# https://github.com/mozilla-b2g/busybox/blob/master/archival/tar.c#L26
-# "TODO: security with -C DESTDIR option can be enhanced."
-# 
 # *Some* vendors have patched the issue. It seems to be a mixed bag as to what you find in the wild. 
 # "Bug 8411 - tar: directory traversal via crafted tar file which contains a symlink pointing outside of the current directory"
 # https://bugs.busybox.net/attachment.cgi?id=6211&action=diff
 # 
 # During NFZ Update a tar file is dropped via FTP after being downloaded via https, after an http JSON redirection.
+# This is the perfect opportunity to write arbitrary files at will. 
 #
 # Kick off Assistant with --test_server
 # /Applications/Assistant_1_1_0.app/Contents/MacOS/Assistant --test_server
@@ -59,11 +61,18 @@
 # "Tried to find out something about the "FTP-path traversal" with the "DotDotPwn"-tool in Kali linux." 
 # https://forums.hak5.org/index.php?/topic/39735-reversing-mavic-pro-firmware/&do=findComment&comment=286172
 #
-# The "patch" that DJI chose to go with instead of the vendor issues patch is to make /system "ro" on the Mavic. (Other firmware such as *current* Spark may be "rw" depending on version) 
+# The "patch" that DJI chose to go with instead of the vendor issued patch is to make /system "ro" on the Mavic. (Other firmware such as *current* Spark may be "rw" depending on version) 
 # /dev/block/platform/comip-mmc.1/by-name/system /system ext4 ro,relatime,data=ordered 0 0
+# Find your own easter eggs! 
 
 require 'webrick'
 
+puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
+
+if Gem.win_platform?
+    print "Sorry Windows users! You get no soup!"
+    exit
+end
 # Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
 if ENV['USER'] == "root"
   print "Running as root... thanks!\n" 
@@ -71,28 +80,29 @@ else
   print "Run as root please\n"
   exit
 end
-if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
-  print "Flysafe redirection already in hosts file\n"
-else
-  print "Adding entry for Flysafe redirection to /etc/hosts"
-  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
-end
-
 
 server = WEBrick::HTTPServer.new(:Port => 80,
-                             :SSLEnable => false,
-                             :ServerAlias => 'localhost')
+  Logger: WEBrick::Log.new("/dev/null"),
+  AccessLog: [],
+)
 
 server.mount_proc '/api' do |req, res|
   res.body = '{"status":0,"version":"01.00.00.03","url":"http://localhost/flysafe_db_files/GetRoot","update":false}'
 end
 
 server.mount_proc '/flysafe_db_files' do |req, res|
-  res.body = File.read("bug.tar")
+  res.body = File.read("fireworks.tar")
+  system ("say 'undefined Update Failed means YOU failed... otherwise'")
+  system ("say '100% Complete means your write file took'")
+  system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
+  print "Hopefully you dropped your file in a magic location!".red
 end
 
 trap 'INT' do server.shutdown end
 
+# https://github.com/mozilla-b2g/busybox/blob/master/archival/tar.c#L26
+# "TODO: security with -C DESTDIR option can be enhanced."
+# 
 # The bug being exploited is in the 'dji_sys' binary
 #  busybox strings /system/bin/dji_sys | grep "tar "
 #  busybox tar -xvf %s -C %s
@@ -100,25 +110,89 @@ trap 'INT' do server.shutdown end
 #  ..
 #  busybox tar -xf %s -C %s
 
-system("rm -rf symlink anything.txt bug.tar")
-system("echo 'get root' > anything.txt")
-system("tar cvf bug.tar anything.txt")
-system("ln -s /data symlink")
-system("tar --append -f bug.tar symlink")
+writepath = ARGV[0] # /data (rw) ? /system (ro) *most* of the time! 
+
+unless ARGV[1]
+  puts 'Usage: ruby RedHerring.rb <remote_path_to_write_to> <local_file_to_write>'
+  puts '   ex: ruby RedHerring.rb /system/bin/pwnt.sh /tmp/xxx'
+  exit 1
+end
+
+# YOLO? Hit /system/bin/start_dji_system.sh
+# It is risky though... 
+#
+# TODO:
+# Possible targets from start_dji_system.sh on Mavic (create trigger via ftp! then reboot?)
+#
+# Check whether do auto fs write test
+# if [ -f /data/dji/cfg/test/fs ]; then
+#    /system/bin/test_fs_write.sh
+#
+# if [ -f /data/dji/cfg/amt_sdr_test.cfg ]; then
+#     /system/bin/test_sdr.sh
+# 
+# Check whether do auto OTA upgrade test
+# if [ -f /data/dji/cfg/test/ota ]; then
+#    /system/bin/test_ota.sh
+#
+# Finding a good / safe write path is an exercise left to the reader. 
+
+destfile = File.basename(writepath)
+destdir = File.dirname(writepath)
+nastyfile = File.readlines(ARGV[1])
+
+system("rm -rf symlink Burning0day.txt fireworks.tar")
+system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
+system("tar cf fireworks.tar Burning0day.txt")
+system("ln -s " + destdir + " symlink")
+system("tar --append -f fireworks.tar symlink")
 system("rm -rf symlink")
 system("mkdir -p symlink")
 
-adbensh = 
-"#!/system/bin/sh\n/system/bin/adb_en.sh\n"
-File.open("symlink/evil.sh", 'w') {|f| f.write(adbensh) }
-system("tar --append -f bug.tar symlink/evil.sh")
-system("tar --list -f bug.tar")
+File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
+system("tar --append -f fireworks.tar symlink/" + destfile)
 
-# root@wm220_dz_ap0002_v1:/ # ls -al /data/evil.sh                               
-# -rw-r--r-- root     20             39 2017-07-01 23:50 evil.sh
+# root@wm220_dz_ap0002_v1:/ # ls -al /data/thx_darksimpson.sh  
+# -rw-r--r-- root     20             39 2017-07-01 23:50 thx_darksimpson.sh
 
-pid = spawn("/Applications/Assistant_1_1_0.app/Contents/MacOS/Assistant --test_server --factory")
+begin
+  require 'colorize'
+  require 'net/http'
+rescue LoadError
+  puts "Please run 'gem install colorize and net/http'" 
+end
+
+system("osascript -e 'set Volume 4'")
+system("say Please eyeball the following message from your equipment manufacturer")
+system("say Press enter to continue")
+Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end 
+puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
+puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
+puts "Disabling such features may inadvertently disable others and cause unpredictable behaviour.\"".red
+puts " - Christian Struwe, head of European public policy at DJI".red
+puts "Press <enter> to continue".green
+$stdin.gets
+
+if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
+  print "Flysafe redirection already in hosts file\n"
+else
+  print "Adding entry for Flysafe redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
+end
+
+# Tested with: https://dl.djicdn.com/downloads/dji_assistant/20170527/DJI+Assistant+2+1.1.2.573+2017_05_27+17_45_27+6e0216bf(b21de8d8).pkg
+# MD5 Assistant = 792b5622e895ca6d041be158f21a28f9
+
+pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
 Process.detach(pid)
 
+print "Please select a connected device, and confirm the NFZ update".red
+system ("say 'Please select a connected device, and confirm the NFZ update'")
+
+trap("INT"){ 
+  server.shutdown 
+  puts "He etep no ffyssh But Heryng Red"
+  puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng"
+}
 server.start
 
