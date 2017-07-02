@@ -140,6 +140,7 @@ end
 destfile = File.basename(writepath)
 destdir = File.dirname(writepath)
 nastyfile = File.readlines(ARGV[1])
+nastyfile = nastyfile.join("")
 
 system("rm -rf symlink Burning0day.txt fireworks.tar")
 system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
@@ -191,7 +192,7 @@ system ("say 'Please select a connected device, and confirm the NFZ update'")
 
 trap("INT"){ 
   server.shutdown 
-  puts "He etep no ffyssh But Heryng Red"
+  puts "\nHe etep no ffyssh But Heryng Red"
   puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng"
 }
 server.start
