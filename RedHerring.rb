@@ -119,6 +119,10 @@ unless ARGV[1]
   exit 1
 end
 
+# Apparantly folks can't find a copy of start_dji_system.sh... try here?
+# https://github.com/droner69/MavicPro/blob/master/MavicPro_Scripts/start_dji_system.sh
+# You could alternately extract you own...
+# 
 # YOLO? Hit /system/bin/start_dji_system.sh
 # It is risky though... 
 #
@@ -198,7 +202,8 @@ system("killall -HUP mDNSResponder")
 # MD5 Assistant_1_0_4.app/Contents/MacOS/Assistant = 300afd66aa7b34cf95ab254edbe01382
 # MD5 Assistant_1_0_9.app/Contents/MacOS/Assistant = 272eda7187ec1d8fff743458a9c093c8
 # MD5 Assistant_1_1_0.app/Contents/MacOS/Assistant = 38f542bc59d6680788cfb72d75b465b3
-
+#
+# See current issue for erratta: https://github.com/MAVProxyUser/P0VsRedHerring/issues/1
 
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
 pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
