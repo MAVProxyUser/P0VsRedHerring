@@ -82,8 +82,9 @@ else
 end
 
 server = WEBrick::HTTPServer.new(:Port => 80,
-  Logger: WEBrick::Log.new("/dev/null"),
-  AccessLog: [],
+#  Logger: WEBrick::Log.new("/dev/null"),
+  Logger: WEBrick::Log.new(STDOUT),
+#  AccessLog: [],
 )
 
 server.mount_proc '/api' do |req, res|
@@ -92,8 +93,8 @@ end
 
 server.mount_proc '/flysafe_db_files' do |req, res|
   res.body = File.read("fireworks.tar")
-  system ("say 'undefined Update Failed means YOU failed... otherwise'")
-  system ("say '100% Complete means your write file took'")
+#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
+#  system ("say '100% Complete means your write file took'")
   system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
   print "Hopefully you dropped your file in a magic location!".red
 end
@@ -165,8 +166,8 @@ rescue LoadError
 end
 
 system("osascript -e 'set Volume 4'")
-system("say Please eyeball the following message from your equipment manufacturer")
-system("say Press enter to continue")
+# system("say Please eyeball the following message from your equipment manufacturer")
+# system("say Press enter to continue")
 Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end 
 puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
 puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
@@ -178,18 +179,33 @@ $stdin.gets
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
   print "Flysafe redirection already in hosts file\n"
 else
-  print "Adding entry for Flysafe redirection to /etc/hosts"
+  print "Adding entry for Flysafe redirection to /etc/hosts\n"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
 end
 
+if File.readlines("/etc/hosts").grep(/swsf\.djicorp\.com/).size > 0
+  print "Swsf DJICorp redirection already in hosts file\n"
+else
+  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
+end
+
+system("killall -HUP mDNSResponder")
+
 # Tested with: https://dl.djicdn.com/downloads/dji_assistant/20170527/DJI+Assistant+2+1.1.2.573+2017_05_27+17_45_27+6e0216bf(b21de8d8).pkg
 # MD5 Assistant = 792b5622e895ca6d041be158f21a28f9
+# Will be tested soon
+# MD5 Assistant_1_0_4.app/Contents/MacOS/Assistant = 300afd66aa7b34cf95ab254edbe01382
+# MD5 Assistant_1_0_9.app/Contents/MacOS/Assistant = 272eda7187ec1d8fff743458a9c093c8
+# MD5 Assistant_1_1_0.app/Contents/MacOS/Assistant = 38f542bc59d6680788cfb72d75b465b3
 
-pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
+
+#pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
+pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
 Process.detach(pid)
 
-print "Please select a connected device, and confirm the NFZ update".red
-system ("say 'Please select a connected device, and confirm the NFZ update'")
+print "Please select a connected device, and confirm the NFZ update\n".red
+#system ("say 'Please select a connected device, and confirm the NFZ update'")
 
 trap("INT"){ 
   server.shutdown 
