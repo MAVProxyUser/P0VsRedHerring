@@ -81,12 +81,13 @@ else
   exit
 end
 
-devicecheck = %x[system_profiler SPUSBDataType | grep "DJI:" -A19]
+devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
 # Vendor ID: 0x2ca3
 if devicecheck.include? "2ca3"
     print "found DJI Aircraft\n"
 else 
     print "Plug in your drone... and try again\n"
+    exit
 end
 
 server = WEBrick::HTTPServer.new(:Port => 80,
@@ -127,12 +128,33 @@ unless ARGV[1]
   exit 1
 end
 
-# Apparantly folks can't find a copy of start_dji_system.sh... try here?
-# https://github.com/droner69/MavicPro/blob/master/MavicPro_Scripts/start_dji_system.sh
-# You could alternately extract you own...
-# 
 # YOLO? Hit /system/bin/start_dji_system.sh
 # It is risky though... 
+#
+# Apparantly folks can't find a copy of start_dji_system.sh... try here?
+# https://github.com/droner69/MavicPro/blob/master/MavicPro_Scripts/start_dji_system.sh
+#
+# You could alternately extract your own...
+# Try /Applications/Assistant.app/Contents/MacOS/Data/firm_cache ?
+# Binary file ./wm220_0801_v01.04.17.03_20170120.pro.fw.sig matches
+# Binary file ./wm220_0801_v01.05.00.20_20170331.pro.fw.sig matches
+# Binary file ./wm220_0801_v01.05.01.07_20170601.pro.fw.sig matches
+# Binary file ./wm220_1301_v01.04.17.03_20170120.pro.fw.sig matches
+# Binary file ./wm220_1301_v01.05.00.23_20170418.pro.fw.sig matches
+# Binary file ./wm220_1301_v01.05.01.07_20170601.pro.fw.sig matches
+# Binary file ./wm220_2801_v01.02.21.01_20170421.pro.fw.sig matches
+# Binary file ./wm220_2801_v01.02.22.08_20170601.pro.fw.sig matches
+# 
+# Use image.py from freaky! https://github.com/fvantienen/dji_rev/blob/master/tools/image.py
+# $ python3 ~/Desktop/dji_research/tools/image.py ./wm220_0801_v01.05.00.20_20170331.pro.fw.sig
+#
+# $ file wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin
+# wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin: Java archive data (JAR)
+# 
+# $ tar xvf wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin system/bin/start_dji_system.sh 
+# x system/bin/start_dji_system.sh
+# $ ls -alh system/bin/start_dji_system.sh 
+# -rwxr-xr-x  1 kfinisterre  admin   9.0K Feb 29  2008 system/bin/start_dji_system.sh
 #
 # Maybe someone wants to try the *less* risky /system/bin/start_offline_liveview.sh ? 
 #
