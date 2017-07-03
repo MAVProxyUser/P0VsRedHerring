@@ -154,7 +154,7 @@ end
 # $ tar xvf wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin system/bin/start_dji_system.sh 
 # x system/bin/start_dji_system.sh
 # $ ls -alh system/bin/start_dji_system.sh 
-# -rwxr-xr-x  1 kfinisterre  admin   9.0K Feb 29  2008 system/bin/start_dji_system.sh
+# -rwxr-xr-x  1 hostile  admin   9.0K Feb 29  2008 system/bin/start_dji_system.sh
 #
 # Maybe someone wants to try the *less* risky /system/bin/start_offline_liveview.sh ? 
 #
