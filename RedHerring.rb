@@ -81,6 +81,14 @@ else
   exit
 end
 
+devicecheck = %x[system_profiler SPUSBDataType | grep "DJI:" -A19]
+# Vendor ID: 0x2ca3
+if devicecheck.include? "2ca3"
+    print "found DJI Aircraft\n"
+else 
+    print "Plug in your drone... and try again\n"
+end
+
 server = WEBrick::HTTPServer.new(:Port => 80,
 #  Logger: WEBrick::Log.new("/dev/null"),
   Logger: WEBrick::Log.new(STDOUT),
