@@ -126,6 +126,8 @@ end
 # YOLO? Hit /system/bin/start_dji_system.sh
 # It is risky though... 
 #
+# Maybe someone wants to try the *less* risky /system/bin/start_offline_liveview.sh ? 
+#
 # TODO:
 # Possible targets from start_dji_system.sh on Mavic (create trigger via ftp! then reboot?)
 #
