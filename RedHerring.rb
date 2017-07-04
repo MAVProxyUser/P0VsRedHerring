@@ -70,23 +70,23 @@ require 'webrick'
 puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
 
 if Gem.win_platform?
-    print "Sorry Windows users! You get no soup!"
+    puts "Sorry Windows users! You get no soup!"
     exit
 end
 # Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
 if ENV['USER'] == "root"
-  print "Running as root... thanks!\n" 
+  puts "Running as root... thanks!\n" 
 else
-  print "Run as root please\n"
+  puts "Run as root please\n"
   exit
 end
 
 devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
 # Vendor ID: 0x2ca3
 if devicecheck.include? "2ca3"
-    print "found DJI Aircraft\n"
+    puts "found DJI Aircraft\n"
 else 
-    print "Plug in your drone... and try again\n"
+    puts "Plug in your drone... and try again\n"
     exit
 end
 
@@ -97,8 +97,8 @@ server = WEBrick::HTTPServer.new(:Port => 80,
 #server = WEBrick::HTTPServer.new(:Port => 443,
 #  :SSLEnable => true , 
 #  :SSLCertName => cert_name,
-#  Logger: WEBrick::Log.new("/dev/null"),
-  Logger: WEBrick::Log.new(STDOUT),
+  Logger: WEBrick::Log.new("/dev/null"),
+#  Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
 )
 
@@ -111,7 +111,7 @@ server.mount_proc '/flysafe_db_files' do |req, res|
 #  system ("say 'undefined Update Failed means YOU failed... otherwise'")
 #  system ("say '100% Complete means your write file took'")
   system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
-  print "Hopefully you dropped your file in a magic location!".red
+  puts "Hopefully you dropped your file in a magic location!".red
 end
 
 trap 'INT' do server.shutdown end
@@ -208,15 +208,15 @@ rescue LoadError
 end
 
 system("osascript -e 'set Volume 4'")
-# system("say Please eyeball the following message from your equipment manufacturer")
-# system("say Press enter to continue")
-Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end 
+system("say Please eyeball the following message from your equipment manufacturer")
+system("say Press enter to continue")
+Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end # Old Beta Release Leak Control... you can remove this
 puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
 puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
 puts "Disabling such features may inadvertently disable others and cause unpredictable behaviour.\"".red
 puts " - Christian Struwe, head of European public policy at DJI".red
-#puts "Press <enter> to continue".green
-#$stdin.gets
+puts "Press <enter> to continue".green
+$stdin.gets
 
 # These are some hostnames known to be used with DJI Assistant 2 downloads that *may* be overwritable 
 #
@@ -233,34 +233,34 @@ puts " - Christian Struwe, head of European public policy at DJI".red
 #127.0.0.1 server-52-84-64-153.ord51.r.cloudfront.net
 
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
-  print "Flysafe redirection already in hosts file\n"
+  puts "Flysafe redirection already in hosts file\n"
 else
-  print "Adding entry for Flysafe redirection to /etc/hosts\n"
+  puts "Adding entry for Flysafe redirection to /etc/hosts\n"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
 end
 
 if File.readlines("/etc/hosts").grep(/swsf\.djicorp\.com/).size > 0
-  print "Swsf DJICorp redirection already in hosts file\n"
+  puts "Swsf DJICorp redirection already in hosts file\n"
 else
-  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
 end
 
 if File.readlines("/etc/hosts").grep(/ec2-52-2-37-224\.compute-1\.amazonaws\.com/).size > 0
-  print "Swsf amazonaws redirection already in hosts file\n"
+  puts "Swsf amazonaws redirection already in hosts file\n"
 else
-  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com\n") }
 end
 
 if File.readlines("/etc/hosts").grep(/ec2-54-87-167-148\.compute-1\.amazonaws\.com/).size > 0
-  print "Swsf amazonaws redirection already in hosts file\n"
+  puts "Swsf amazonaws redirection already in hosts file\n"
 else
-  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com\n") }
 end
 
-
+# make sure DNS cache has no fuckery
 system("killall -HUP mDNSResponder")
 
 # Tested with: https://dl.djicdn.com/downloads/dji_assistant/20170527/DJI+Assistant+2+1.1.2.573+2017_05_27+17_45_27+6e0216bf(b21de8d8).pkg
@@ -272,24 +272,28 @@ system("killall -HUP mDNSResponder")
 # MD5 Assistant_1_0_9.app/Contents/MacOS/Assistant = 272eda7187ec1d8fff743458a9c093c8
 # MD5 Assistant_1_1_0.app/Contents/MacOS/Assistant = 38f542bc59d6680788cfb72d75b465b3
 #
-# See current issue for erratta: https://github.com/MAVProxyUser/P0VsRedHerring/issues/1
+# See current issue for errata: https://github.com/MAVProxyUser/P0VsRedHerring/issues/1
 
+# Let the end user do this on their own... 
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
 #Process.detach(pid)
 
-puts "please type: /Applications/Assistant.app/Contents/MacOS/Assistant --factory"
+system ("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
+puts "please type:" 
+puts "/Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
 puts "or "
-puts "please type: /Applications/Assistant.app/Contents/MacOS/Assistant"
-puts "Release will come with a legend of versions and known good command line options"
+puts "please type:"
+puts " /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
+puts "Release *may* come with a legend of versions and known good command line options".blue
 
-print "Please select a connected device, and confirm the NFZ update\n".red
-#system ("say 'Please select a connected device, and confirm the NFZ update'")
+puts "Please select a connected device, and confirm the NFZ update\n".red
+system ("say 'Please select a connected device, and confirm the NFZ update'")
 
 trap("INT"){ 
   server.shutdown 
-  puts "\nHe etep no ffyssh But Heryng Red"
-  puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng"
+  puts "\nHe etep no ffyssh But Heryng Red".blue
+  puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng".blue
 }
 server.start
 
