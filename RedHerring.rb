@@ -19,7 +19,7 @@
 #
 # To be clear 99% of the people saying "we" in this "DJI Jailbreaking / Unlocking" scene have NOTHING to do with the real work being done. 
 # These Darwin Awards waiting to happen are NOT doing anything but parroting info others leak to them, don't be fooled
-# https://www.facebook.com/groups/DjiJailbreak/  <---- NO Affiliation! 
+# https://www.facebook.com/groups/MyDjiDroneDevelopment/  <---- NO Affiliation! 
 # 
 # Lets examine POV's claims and red herrings. I've been chasing them for over a month or so... They make complete sense now. 
 # https://www.rcgroups.com/forums/showpost.php?p=36232471&postcount=15113
@@ -75,25 +75,40 @@ assistant_bin = "/Applications/Assistant.app/Contents/MacOS/Assistant"
 cygwin = false
 
 if RbConfig::CONFIG['host_os'] == "cygwin"
-	print "Sorry you're running Windows, but at least you're using Cygwin!\n"
-	assistant_bin = '"/cygdrive/c/Program Files (x86)/DJI Product/DJI Assistant 2/DJI Assistant 2.exe"'
-	cygwin = true
+    puts "Sorry you're running Windows, but at least you're using Cygwin!"
+    assistant_bin = '"/cygdrive/c/Program Files (x86)/DJI Product/DJI Assistant 2/DJI Assistant 2.exe"'
+    cygwin = true
 elsif Gem.win_platform?
-    print "Sorry Windows users! You get no soup!\n"
+    puts "Sorry Windows users! You get no soup!"
     exit
 end
 
 # Check if Running as root / Cygwin, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
 if ENV['USER'] == "root" || cygwin
-  print "Running as root (or using CygWin)... thanks!\n" 
+  puts "Running as root (or using CygWin)... thanks!" 
 else
-  print "Run as root please\n"
+  puts "Run as root please"
   exit
 end
 
+devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
+# Vendor ID: 0x2ca3
+if devicecheck.include? "2ca3"
+    puts "found DJI Aircraft\n"
+else 
+    puts "Plug in your drone... and try again\n"
+    exit
+end
+
+#cert_name = [
+#	%w[CN *.amazonaws.com],
+#]
 server = WEBrick::HTTPServer.new(:Port => 80,
-#  Logger: WEBrick::Log.new("/dev/null"),
-  Logger: WEBrick::Log.new(STDOUT),
+#server = WEBrick::HTTPServer.new(:Port => 443,
+#  :SSLEnable => true , 
+#  :SSLCertName => cert_name,
+  Logger: WEBrick::Log.new("/dev/null"),
+#  Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
 )
 
@@ -103,10 +118,10 @@ end
 
 server.mount_proc '/flysafe_db_files' do |req, res|
   res.body = File.read("fireworks.tar")
-#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
-#  system ("say '100% Complete means your write file took'")
+  system ("say 'undefined Update Failed means YOU failed... otherwise'")
+  system ("say '100% Complete means your write file took'")
   system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
-  print "Hopefully you dropped your file in a magic location!".red
+  puts "Hopefully you dropped your file in a magic location!".red
 end
 
 trap 'INT' do server.shutdown end
@@ -131,6 +146,33 @@ end
 
 # YOLO? Hit /system/bin/start_dji_system.sh
 # It is risky though... 
+#
+# Apparantly folks can't find a copy of start_dji_system.sh... try here?
+# https://github.com/droner69/MavicPro/blob/master/MavicPro_Scripts/start_dji_system.sh
+#
+# You could alternately extract your own...
+# Try /Applications/Assistant.app/Contents/MacOS/Data/firm_cache ?
+# Binary file ./wm220_0801_v01.04.17.03_20170120.pro.fw.sig matches
+# Binary file ./wm220_0801_v01.05.00.20_20170331.pro.fw.sig matches
+# Binary file ./wm220_0801_v01.05.01.07_20170601.pro.fw.sig matches
+# Binary file ./wm220_1301_v01.04.17.03_20170120.pro.fw.sig matches
+# Binary file ./wm220_1301_v01.05.00.23_20170418.pro.fw.sig matches
+# Binary file ./wm220_1301_v01.05.01.07_20170601.pro.fw.sig matches
+# Binary file ./wm220_2801_v01.02.21.01_20170421.pro.fw.sig matches
+# Binary file ./wm220_2801_v01.02.22.08_20170601.pro.fw.sig matches
+# 
+# Use image.py from freaky! https://github.com/fvantienen/dji_rev/blob/master/tools/image.py
+# $ python3 ~/Desktop/dji_research/tools/image.py ./wm220_0801_v01.05.00.20_20170331.pro.fw.sig
+#
+# $ file wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin
+# wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin: Java archive data (JAR)
+# 
+# $ tar xvf wm220_0801_v01.05.00.20_20170331.pro.fw_0801.bin system/bin/start_dji_system.sh 
+# x system/bin/start_dji_system.sh
+# $ ls -alh system/bin/start_dji_system.sh 
+# -rwxr-xr-x  1 hostile  admin   9.0K Feb 29  2008 system/bin/start_dji_system.sh
+#
+# Maybe someone wants to try the *less* risky /system/bin/start_offline_liveview.sh ? 
 #
 # TODO:
 # Possible targets from start_dji_system.sh on Mavic (create trigger via ftp! then reboot?)
@@ -177,9 +219,9 @@ rescue LoadError
 end
 
 system("osascript -e 'set Volume 4'")
-# system("say Please eyeball the following message from your equipment manufacturer")
-# system("say Press enter to continue")
-Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end 
+system("say Please eyeball the following message from your equipment manufacturer")
+system("say Press enter to continue")
+Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end # Old Beta Release Leak Control... you can remove this
 puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
 puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
 puts "Disabling such features may inadvertently disable others and cause unpredictable behaviour.\"".red
@@ -187,41 +229,79 @@ puts " - Christian Struwe, head of European public policy at DJI".red
 puts "Press <enter> to continue".green
 $stdin.gets
 
+# These are some hostnames known to be used with DJI Assistant 2 downloads that *may* be overwritable 
+#
+#127.0.0.1 ec2-54-165-147-148.compute-1.amazonaws.com
+#127.0.0.1 ec2-52-44-159-86.compute-1.amazonaws.com
+#127.0.0.1 ec2-52-4-246-38.compute-1.amazonaws.com
+#127.0.0.1 ec2-54-209-193-145.compute-1.amazonaws.com
+#127.0.0.1 ec2-54-175-56-145.compute-1.amazonaws.com
+#127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com
+#127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com
+#127.0.0.1 ec2-34-225-114-106.compute-1.amazonaws.com
+#127.0.0.1 flysafe.aasky.net
+#127.0.0.1 swsf.djicorp.com
+#127.0.0.1 server-52-84-64-153.ord51.r.cloudfront.net
+
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
-  print "Flysafe redirection already in hosts file\n"
+  puts "Flysafe redirection already in hosts file\n"
 else
-  print "Adding entry for Flysafe redirection to /etc/hosts\n"
+  puts "Adding entry for Flysafe redirection to /etc/hosts\n"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
 end
 
 if File.readlines("/etc/hosts").grep(/swsf\.djicorp\.com/).size > 0
-  print "Swsf DJICorp redirection already in hosts file\n"
+  puts "Swsf DJICorp redirection already in hosts file\n"
 else
-  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
 end
 
+if File.readlines("/etc/hosts").grep(/ec2-52-2-37-224\.compute-1\.amazonaws\.com/).size > 0
+  puts "Swsf amazonaws redirection already in hosts file\n"
+else
+  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com\n") }
+end
+
+if File.readlines("/etc/hosts").grep(/ec2-54-87-167-148\.compute-1\.amazonaws\.com/).size > 0
+  puts "Swsf amazonaws redirection already in hosts file\n"
+else
+  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com\n") }
+end
+
+# make sure DNS cache has no fuckery
 system("killall -HUP mDNSResponder")
 
 # Tested with: https://dl.djicdn.com/downloads/dji_assistant/20170527/DJI+Assistant+2+1.1.2.573+2017_05_27+17_45_27+6e0216bf(b21de8d8).pkg
 # MD5 Assistant = 792b5622e895ca6d041be158f21a28f9
-# Will be tested soon
+# Will be tested soon on the following, we now know each Assistant has different hosts for each option (or lack there of)
+# In some cases direct IP's are used making this useless
+# 
 # MD5 Assistant_1_0_4.app/Contents/MacOS/Assistant = 300afd66aa7b34cf95ab254edbe01382
 # MD5 Assistant_1_0_9.app/Contents/MacOS/Assistant = 272eda7187ec1d8fff743458a9c093c8
 # MD5 Assistant_1_1_0.app/Contents/MacOS/Assistant = 38f542bc59d6680788cfb72d75b465b3
+#
+# See current issue for errata: https://github.com/MAVProxyUser/P0VsRedHerring/issues/1
 
-
+# Let the end user do this on their own... 
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
-pid = spawn(assistant_bin + " --test_server --factory")
-Process.detach(pid)
+#pid = spawn(assistant_bin + " --test_server --factory")
+#Process.detach(pid)
 
-print "Please select a connected device, and confirm the NFZ update\n".red
-#system ("say 'Please select a connected device, and confirm the NFZ update'")
+system ("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
+puts "please type:" 
+puts "/Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
+puts "or "
+puts "please type:"
+puts " /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
+puts "Release *may* come with a legend of versions and known good command line options".blue
 
 trap("INT"){ 
   server.shutdown 
-  puts "\nHe etep no ffyssh But Heryng Red"
-  puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng"
+  puts "\nHe etep no ffyssh But Heryng Red".blue
+  puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng".blue
 }
 server.start
 
