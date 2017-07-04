@@ -69,13 +69,23 @@ require 'webrick'
 
 puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
 
-if Gem.win_platform?
-    print "Sorry Windows users! You get no soup!"
+# Default config values for OSX
+hosts_file = "/etc/hosts"
+assistant_bin = "/Applications/Assistant.app/Contents/MacOS/Assistant"
+cygwin = false
+
+if RbConfig::CONFIG['host_os'] == "cygwin"
+	print "Sorry you're running Windows, but at least you're using Cygwin!\n"
+	assistant_bin = '"/cygdrive/c/Program Files (x86)/DJI Product/DJI Assistant 2/DJI Assistant 2.exe"'
+	cygwin = true
+elsif Gem.win_platform?
+    print "Sorry Windows users! You get no soup!\n"
     exit
 end
-# Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
-if ENV['USER'] == "root"
-  print "Running as root... thanks!\n" 
+
+# Check if Running as root / Cygwin, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
+if ENV['USER'] == "root" || cygwin
+  print "Running as root (or using CygWin)... thanks!\n" 
 else
   print "Run as root please\n"
   exit
@@ -145,15 +155,16 @@ nastyfile = nastyfile.join("")
 
 system("rm -rf symlink Burning0day.txt fireworks.tar")
 system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
-system("tar cpf fireworks.tar Burning0day.txt")
+# Note: --owner=1/--group=1 forces file uid/gid to root for CygWin, as we're not running as root
+# This is probably not strictly necessary, but "keeps it clean" on the Mavic 
+system("tar cpf fireworks.tar --owner=1 --group=1 Burning0day.txt")
 system("ln -s " + destdir + " symlink")
-system("tar --append -f fireworks.tar symlink")
+system("tar --append -f fireworks.tar --owner=1 --group=1 symlink")
 system("rm -rf symlink")
 system("mkdir -p symlink")
-
 File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
 system("chmod 755 " + "symlink/" + destfile )
-system("tar --append -pf fireworks.tar symlink/" + destfile)
+system("tar --append -pf fireworks.tar  --owner=1 --group=1 symlink/" + destfile)
 
 # root@wm220_dz_ap0002_v1:/ # ls -al /data/thx_darksimpson.sh  
 # -rw-r--r-- root     20             39 2017-07-01 23:50 thx_darksimpson.sh
@@ -201,7 +212,7 @@ system("killall -HUP mDNSResponder")
 
 
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
-pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
+pid = spawn(assistant_bin + " --test_server --factory")
 Process.detach(pid)
 
 print "Please select a connected device, and confirm the NFZ update\n".red
