@@ -19,7 +19,7 @@
 #
 # To be clear 99% of the people saying "we" in this "DJI Jailbreaking / Unlocking" scene have NOTHING to do with the real work being done. 
 # These Darwin Awards waiting to happen are NOT doing anything but parroting info others leak to them, don't be fooled
-# https://www.facebook.com/groups/DjiJailbreak/  <---- NO Affiliation! 
+# https://www.facebook.com/groups/MyDjiDroneDevelopment/  <---- NO Affiliation! 
 # 
 # Lets examine POV's claims and red herrings. I've been chasing them for over a month or so... They make complete sense now. 
 # https://www.rcgroups.com/forums/showpost.php?p=36232471&postcount=15113
