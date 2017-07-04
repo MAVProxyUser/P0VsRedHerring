@@ -90,7 +90,13 @@ else
     exit
 end
 
+#cert_name = [
+#	%w[CN *.amazonaws.com],
+#]
 server = WEBrick::HTTPServer.new(:Port => 80,
+#server = WEBrick::HTTPServer.new(:Port => 443,
+#  :SSLEnable => true , 
+#  :SSLCertName => cert_name,
 #  Logger: WEBrick::Log.new("/dev/null"),
   Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
@@ -209,8 +215,22 @@ puts "Press <enter> after reading this comment from DJI, also verify you have 50
 puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
 puts "Disabling such features may inadvertently disable others and cause unpredictable behaviour.\"".red
 puts " - Christian Struwe, head of European public policy at DJI".red
-puts "Press <enter> to continue".green
-$stdin.gets
+#puts "Press <enter> to continue".green
+#$stdin.gets
+
+# These are some hostnames known to be used with DJI Assistant 2 downloads that *may* be overwritable 
+#
+#127.0.0.1 ec2-54-165-147-148.compute-1.amazonaws.com
+#127.0.0.1 ec2-52-44-159-86.compute-1.amazonaws.com
+#127.0.0.1 ec2-52-4-246-38.compute-1.amazonaws.com
+#127.0.0.1 ec2-54-209-193-145.compute-1.amazonaws.com
+#127.0.0.1 ec2-54-175-56-145.compute-1.amazonaws.com
+#127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com
+#127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com
+#127.0.0.1 ec2-34-225-114-106.compute-1.amazonaws.com
+#127.0.0.1 flysafe.aasky.net
+#127.0.0.1 swsf.djicorp.com
+#127.0.0.1 server-52-84-64-153.ord51.r.cloudfront.net
 
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
   print "Flysafe redirection already in hosts file\n"
@@ -226,11 +246,28 @@ else
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
 end
 
+if File.readlines("/etc/hosts").grep(/ec2-52-2-37-224\.compute-1\.amazonaws\.com/).size > 0
+  print "Swsf amazonaws redirection already in hosts file\n"
+else
+  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com\n") }
+end
+
+if File.readlines("/etc/hosts").grep(/ec2-54-87-167-148\.compute-1\.amazonaws\.com/).size > 0
+  print "Swsf amazonaws redirection already in hosts file\n"
+else
+  print "Adding entry for Swsf DJICorp redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com\n") }
+end
+
+
 system("killall -HUP mDNSResponder")
 
 # Tested with: https://dl.djicdn.com/downloads/dji_assistant/20170527/DJI+Assistant+2+1.1.2.573+2017_05_27+17_45_27+6e0216bf(b21de8d8).pkg
 # MD5 Assistant = 792b5622e895ca6d041be158f21a28f9
-# Will be tested soon
+# Will be tested soon on the following, we now know each Assistant has different hosts for each option (or lack there of)
+# In some cases direct IP's are used making this useless
+# 
 # MD5 Assistant_1_0_4.app/Contents/MacOS/Assistant = 300afd66aa7b34cf95ab254edbe01382
 # MD5 Assistant_1_0_9.app/Contents/MacOS/Assistant = 272eda7187ec1d8fff743458a9c093c8
 # MD5 Assistant_1_1_0.app/Contents/MacOS/Assistant = 38f542bc59d6680788cfb72d75b465b3
@@ -238,8 +275,13 @@ system("killall -HUP mDNSResponder")
 # See current issue for erratta: https://github.com/MAVProxyUser/P0VsRedHerring/issues/1
 
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory", :out => "/dev/null", :err => "/dev/null")
-pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
-Process.detach(pid)
+#pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
+#Process.detach(pid)
+
+puts "please type: /Applications/Assistant.app/Contents/MacOS/Assistant --factory"
+puts "or "
+puts "please type: /Applications/Assistant.app/Contents/MacOS/Assistant"
+puts "Release will come with a legend of versions and known good command line options"
 
 print "Please select a connected device, and confirm the NFZ update\n".red
 #system ("say 'Please select a connected device, and confirm the NFZ update'")
