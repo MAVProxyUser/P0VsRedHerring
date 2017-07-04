@@ -108,8 +108,8 @@ end
 
 server.mount_proc '/flysafe_db_files' do |req, res|
   res.body = File.read("fireworks.tar")
-#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
-#  system ("say '100% Complete means your write file took'")
+  system ("say 'undefined Update Failed means YOU failed... otherwise'")
+  system ("say '100% Complete means your write file took'")
   system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
   puts "Hopefully you dropped your file in a magic location!".red
 end
