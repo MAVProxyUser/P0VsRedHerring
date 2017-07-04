@@ -76,6 +76,7 @@ cygwin = false
 
 if RbConfig::CONFIG['host_os'] == "cygwin"
     puts "Sorry you're running Windows, but at least you're using Cygwin!"
+    puts "Note: you'll need to install the usbutils package for this script to work correctly."
     assistant_bin = '"/cygdrive/c/Program Files (x86)/DJI Product/DJI Assistant 2/DJI Assistant 2.exe"'
     cygwin = true
 elsif Gem.win_platform?
@@ -91,7 +92,13 @@ else
   exit
 end
 
-devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
+if !cygwin
+  devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
+else
+  # lsusb doesn't show the device name as "DJI" for some reason, so use VID
+  devicecheck = %x[lsusb | grep "2ca3"]
+end
+
 # Vendor ID: 0x2ca3
 if devicecheck.include? "2ca3"
     puts "found DJI Aircraft\n"
@@ -292,10 +299,10 @@ system("killall -HUP mDNSResponder")
 
 system ("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
 puts "please type:" 
-puts "/Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
+puts (assistant_bin + " --test_server").blue
 puts "or "
 puts "please type:"
-puts " /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
+puts assistant_bin.blue # depending on version
 puts "Release *may* come with a legend of versions and known good command line options".blue
 
 trap("INT"){ 
