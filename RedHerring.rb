@@ -292,11 +292,11 @@ system("killall -HUP mDNSResponder")
 #Process.detach(pid)
 
 system("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
-puts "please type:" 
-puts "/Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
+puts "In another window please type:" 
+puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
 puts "or "
-puts "please type:"
-puts " /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
+puts "In another window please type:"
+puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
 puts "Release *may* come with a legend of versions and known good command line options".blue
 
 puts "Please select a connected device, and confirm the NFZ update\n".red
@@ -308,4 +308,5 @@ trap("INT"){
   puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng".blue
 }
 server.start
+
 
