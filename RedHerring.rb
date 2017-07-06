@@ -95,7 +95,11 @@ require 'net/ftp'
 ftp = Net::FTP.new('192.168.42.2')
 ftp.passive = true
 ftp.login("RedHerring","IsDaRealest!" )
+begin
 ftp.mkdir('/upgrade/.bin')
+rescue Net::FTPPermError
+puts "file exists"
+end
 ftp.close
 
 #cert_name = [
