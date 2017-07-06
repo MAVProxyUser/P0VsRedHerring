@@ -90,6 +90,14 @@ else
     exit
 end
 
+require 'net/ftp'
+
+ftp = Net::FTP.new('192.168.42.2')
+ftp.passive = true
+ftp.login("RedHerring","IsDaRealest!" )
+ftp.mkdir('/upgrade/.bin')
+ftp.close
+
 #cert_name = [
 #	%w[CN *.amazonaws.com],
 #]
@@ -279,7 +287,7 @@ system("killall -HUP mDNSResponder")
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
 #Process.detach(pid)
 
-system ("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
+system("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
 puts "please type:" 
 puts "/Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
 puts "or "
@@ -288,7 +296,7 @@ puts " /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on vers
 puts "Release *may* come with a legend of versions and known good command line options".blue
 
 puts "Please select a connected device, and confirm the NFZ update\n".red
-system ("say 'Please select a connected device, and confirm the NFZ update'")
+system("say 'Please select a connected device, and confirm the NFZ update'")
 
 trap("INT"){ 
   server.shutdown 
