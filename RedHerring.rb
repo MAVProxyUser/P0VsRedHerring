@@ -120,10 +120,26 @@ end
 
 server.mount_proc '/flysafe_db_files' do |req, res|
   res.body = File.read("fireworks.tar")
-  system ("say 'undefined Update Failed means YOU failed... otherwise'")
-  system ("say '100% Complete means your write file took'")
+#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
+#  system ("say '100% Complete means your write file took'")
   system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
   puts "Hopefully you dropped your file in a magic location!".red
+  ftp = Net::FTP.new('192.168.42.2')
+  ftp.passive = true
+  ftp.login("RedHerring","IsDaRealest!" )
+  begin
+  fireworks = ftp.ls('/upgrade/.bin')
+  if fireworks.grep("total 0")
+    puts "no herring present in /tmp, which is a good thing..."
+  else
+    puts fireworks
+  end
+
+  rescue Net::FTPPermError
+  puts "file exists"
+  end
+  ftp.close
+
 end
 
 trap 'INT' do server.shutdown end
@@ -219,9 +235,9 @@ rescue LoadError
   puts "Please run 'gem install colorize and net/http'" 
 end
 
-system("osascript -e 'set Volume 4'")
-system("say Please eyeball the following message from your equipment manufacturer")
-system("say Press enter to continue")
+#system("osascript -e 'set Volume 4'")
+#system("say Please eyeball the following message from your equipment manufacturer")
+#system("say Press enter to continue")
 Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end # Old Beta Release Leak Control... you can remove this
 puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
 puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
@@ -273,7 +289,7 @@ else
 end
 
 # make sure DNS cache has no fuckery
-system("killall -HUP mDNSResponder")
+# system("killall -HUP mDNSResponder")
 
 # Tested with: https://dl.djicdn.com/downloads/dji_assistant/20170527/DJI+Assistant+2+1.1.2.573+2017_05_27+17_45_27+6e0216bf(b21de8d8).pkg
 # MD5 Assistant = 792b5622e895ca6d041be158f21a28f9
@@ -291,7 +307,7 @@ system("killall -HUP mDNSResponder")
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
 #Process.detach(pid)
 
-system("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
+#system("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
 puts "In another window please type:" 
 puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
 puts "or "
@@ -300,7 +316,7 @@ puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on 
 puts "Release *may* come with a legend of versions and known good command line options".blue
 
 puts "Please select a connected device, and confirm the NFZ update\n".red
-system("say 'Please select a connected device, and confirm the NFZ update'")
+#system("say 'Please select a connected device, and confirm the NFZ update'")
 
 trap("INT"){ 
   server.shutdown 
@@ -308,5 +324,6 @@ trap("INT"){
   puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng".blue
 }
 server.start
+
 
 

