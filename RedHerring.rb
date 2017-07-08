@@ -69,8 +69,9 @@ require 'webrick'
 
 puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
 
-#started = 0
+win = 0
 if Gem.win_platform?
+    win = 1
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
 
@@ -341,7 +342,7 @@ end
 
 end
 
-if Gem.win_platform?
+if win == 1
     edithosts("c:\\Windows\\System32\\Drivers\\etc\\hosts")
 else
     edithosts("/etc/hosts")
