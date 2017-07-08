@@ -127,17 +127,28 @@ puts "RedHerring has been here before... /upgrade/.bin still exists"
 end
 ftp.close
 
+################################################################
 #cert_name = [
 #	%w[CN *.amazonaws.com],
 #]
-server = WEBrick::HTTPServer.new(:Port => 80,
 #server = WEBrick::HTTPServer.new(:Port => 443,
 #  :SSLEnable => true , 
 #  :SSLCertName => cert_name,
+################################################################
+
+if Gem.win_platform?
+  server = WEBrick::HTTPServer.new(:Port => 80,
+  Logger: WEBrick::Log.new(NUL),
+#  Logger: WEBrick::Log.new(STDOUT),
+#  AccessLog: [],
+)
+else
+  server = WEBrick::HTTPServer.new(:Port => 80,
   Logger: WEBrick::Log.new("/dev/null"),
 #  Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
 )
+end 
 
 server.mount_proc '/api' do |req, res|
   res.body = '{"status":0,"version":"01.00.00.03","url":"http://localhost/flysafe_db_files/GetRoot","update":false}'
