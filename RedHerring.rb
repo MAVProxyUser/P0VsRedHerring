@@ -142,6 +142,31 @@ server.mount_proc '/flysafe_db_files' do |req, res|
 
 end
 
+server.mount_proc '/firmware_file' do |req, res|
+  res.body = File.read("fireworks.tar")
+#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
+#  system ("say '100% Complete means your write file took'")
+  system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
+  puts "Hopefully you dropped your file in a magic location!".red
+  # Remove this later and replace with a proper function def()
+  ftp = Net::FTP.new('192.168.42.2')
+  ftp.passive = true
+  ftp.login("RedHerring","IsDaRealest!" )
+  begin
+  fireworks = ftp.ls('/upgrade/.bin')
+  if fireworks.grep("total 0")
+    puts "no herring present in /tmp, which is a good thing..."
+  else
+    puts fireworks
+  end
+
+  rescue Net::FTPPermError
+  puts "file exists"
+  end
+  ftp.close
+
+end
+
 trap 'INT' do server.shutdown end
 
 # https://github.com/mozilla-b2g/busybox/blob/master/archival/tar.c#L26
@@ -259,6 +284,7 @@ $stdin.gets
 #127.0.0.1 flysafe.aasky.net
 #127.0.0.1 swsf.djicorp.com
 #127.0.0.1 server-52-84-64-153.ord51.r.cloudfront.net
+#127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net
 
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
   puts "Flysafe redirection already in hosts file\n"
@@ -272,6 +298,13 @@ if File.readlines("/etc/hosts").grep(/swsf\.djicorp\.com/).size > 0
 else
   puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
+end
+
+if File.readlines("/etc/hosts").grep(/server-54-192-27-106\.mxp4\.r\.cloudfront\.net/).size > 0
+  puts "Swsf amazonaws redirection already in hosts file\n"
+else
+  puts "Adding entry for DJI firmware server for 1.1.2 redirection to /etc/hosts"
+  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net\n") }
 end
 
 if File.readlines("/etc/hosts").grep(/ec2-52-2-37-224\.compute-1\.amazonaws\.com/).size > 0
