@@ -98,7 +98,7 @@ ftp.login("RedHerring","IsDaRealest!" )
 begin
 ftp.mkdir('/upgrade/.bin')
 rescue Net::FTPPermError
-puts "file exists"
+puts "RedHerring has been here before... /upgrade/.bin still exists"
 end
 ftp.close
 
