@@ -70,15 +70,21 @@ require 'webrick'
 puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
 
 if Gem.win_platform?
-    puts "Sorry Windows users! You get no soup!"
-    exit
-end
-# Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
-if ENV['USER'] == "root"
-  puts "Running as root... thanks!\n" 
+    puts "OK Windows users! I guess you can have a little soup!"
+    # Check if Running as admin. 
+    try
+        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a') {|f| f.write("test\n)}
+    catch
+    end
+
 else
-  puts "Run as root please\n"
-  exit
+    # Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
+    if ENV['USER'] == "root"
+    puts "Running as root... thanks!\n" 
+    else
+        puts "Run as root please\n"
+      exit
+    end
 end
 
 devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
