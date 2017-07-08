@@ -138,7 +138,7 @@ ftp.close
 
 if Gem.win_platform?
   server = WEBrick::HTTPServer.new(:Port => 80,
-  Logger: WEBrick::Log.new(NUL),
+  Logger: WEBrick::Log.new(File::NULL),
 #  Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
 )
