@@ -343,8 +343,10 @@ end
 end
 
 if win == 1
+    puts "using windows host file"
     edithosts("c:\\Windows\\System32\\Drivers\\etc\\hosts")
 else
+    puts "using unix path"
     edithosts("/etc/hosts")
 end
 
