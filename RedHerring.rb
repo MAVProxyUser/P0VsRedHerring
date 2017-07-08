@@ -73,6 +73,7 @@ started = 0
 if Gem.win_platform?
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
+    started = 1
 
     begin
         if started == 1
