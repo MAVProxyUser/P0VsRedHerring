@@ -85,20 +85,19 @@ else
     # Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
     if ENV['USER'] == "root"
         puts "Running as root... thanks!\n" 
+        echo "Device check running" 
+        devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
+        # Vendor ID: 0x2ca3
+        if devicecheck.include? "2ca3"
+            puts "found DJI Aircraft\n"
+        else 
+            puts "Plug in your drone... and try again\n"
+            exit
+        end
     else
         puts "Run as root please\n"
-
         exit
     end
-end
-
-devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
-# Vendor ID: 0x2ca3
-if devicecheck.include? "2ca3"
-    puts "found DJI Aircraft\n"
-else 
-    puts "Plug in your drone... and try again\n"
-    exit
 end
 
 begin
