@@ -75,7 +75,7 @@ if Gem.win_platform?
     begin
         require 'win32ole'
         shell = WIN32OLE.new('Shell.Application')
-        shell.ShellExecute('path_to_ruby_program', nil, nil, 'runas')
+        shell.ShellExecute('c:\\RailsInstaller\\Ruby2.2.0\bin\ruby.exe', nil, nil, 'runas')
 
         File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
 
