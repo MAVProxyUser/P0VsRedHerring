@@ -302,39 +302,49 @@ system("tar --append -pf fireworks.tar symlink/" + destfile)
 
 puts "Begining to edit host file entries."
 
-if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
+def edithosts(filepath)
+
+if File.readlines(filepath).grep(/flysafe\.aasky\.net/).size > 0
   puts "Flysafe redirection already in hosts file\n"
 else
-  puts "Adding entry for Flysafe redirection to /etc/hosts\n"
-  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
+  puts "Adding entry for Flysafe redirection to ${filepath}\n"
+  File.open(filepath, 'a') {|f| f.write("\n127.0.0.1 flysafe.aasky.net\n") }
 end
 
-if File.readlines("/etc/hosts").grep(/swsf\.djicorp\.com/).size > 0
+if File.readlines(filepath).grep(/swsf\.djicorp\.com/).size > 0
   puts "Swsf DJICorp redirection already in hosts file\n"
 else
-  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
-  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
+  puts "Adding entry for Swsf DJICorp redirection to ${filepath}"
+  File.open(filepath, 'a') {|f| f.write("\n127.0.0.1 swsf.djicorp.com\n") }
 end
 
-if File.readlines("/etc/hosts").grep(/server-54-192-27-106\.mxp4\.r\.cloudfront\.net/).size > 0
+if File.readlines(filepath).grep(/server-54-192-27-106\.mxp4\.r\.cloudfront\.net/).size > 0
   puts "DJI firmware server for 1.1.2 redirection already in hosts file\n"
 else
-  puts "Adding entry for DJI firmware server for 1.1.2 redirection to /etc/hosts"
-  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net\n") }
+  puts "Adding entry for DJI firmware server for 1.1.2 redirection to ${filepath}"
+  File.open(filepath, 'a') {|f| f.write("\n127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net\n") }
 end
 
-if File.readlines("/etc/hosts").grep(/ec2-52-2-37-224\.compute-1\.amazonaws\.com/).size > 0
+if File.readlines(filepath).grep(/ec2-52-2-37-224\.compute-1\.amazonaws\.com/).size > 0
   puts "Swsf amazonaws redirection already in hosts file\n"
 else
-  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
-  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com\n") }
+  puts "Adding entry for Swsf DJICorp redirection to ${filepath}"
+  File.open(filepath, 'a') {|f| f.write("\n127.0.0.1 ec2-52-2-37-224.compute-1.amazonaws.com\n") }
 end
 
-if File.readlines("/etc/hosts").grep(/ec2-54-87-167-148\.compute-1\.amazonaws\.com/).size > 0
+if File.readlines(filepath).grep(/ec2-54-87-167-148\.compute-1\.amazonaws\.com/).size > 0
   puts "Swsf amazonaws redirection already in hosts file\n"
 else
-  puts "Adding entry for Swsf DJICorp redirection to /etc/hosts"
-  File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com\n") }
+  puts "Adding entry for Swsf DJICorp redirection to ${filepath}"
+  File.open(filepath, 'a') {|f| f.write("\n127.0.0.1 ec2-54-87-167-148.compute-1.amazonaws.com\n") }
+end
+
+end
+
+if Gem.win_platform?
+    edithosts("c:\\Windows\\System32\\Drivers\\etc\\hosts")
+else
+    edithosts("/etc/hosts")
 end
 
 # make sure DNS cache has no fuckery
