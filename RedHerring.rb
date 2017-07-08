@@ -78,7 +78,7 @@ if Gem.win_platform?
             File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
             
         else
-            next
+            return
         end
 
         started = 1
