@@ -75,6 +75,7 @@ if Gem.win_platform?
     try
         File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a') {|f| f.write("test\n)}
     catch
+        puts "You know nothing John Snow"
     end
 
 else
