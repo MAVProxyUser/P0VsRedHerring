@@ -328,7 +328,6 @@ end
 #pid = spawn("/Applications/Assistant.app/Contents/MacOS/Assistant --test_server --factory")
 #Process.detach(pid)
 
-#system("say 'Launch Dee Jay Aye Assistant with the test server command line flag'")
 puts "In another window please type:" 
 puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
 puts "or "
@@ -337,7 +336,6 @@ puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on 
 puts "Release *may* come with a legend of versions and known good command line options".blue
 
 puts "Please select a connected device, and confirm the NFZ update\n".red
-#system("say 'Please select a connected device, and confirm the NFZ update'")
 
 trap("INT"){ 
   server.shutdown 
