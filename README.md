@@ -15,5 +15,4 @@ https://www.rcgroups.com/forums/showpost.php?p=36232471&postcount=15113
 
 [![Fuck yeah](https://github.com/MAVProxyUser/P0VsRedHerring/raw/master/Still.jpeg)](https://www.youtube.com/watch?v=BTQ_CTih1HM)
 
-![thx P0V](https://github.com/MAVProxyUser/P0VsRedHerring/raw/master/BigUps.jpeg)
-
+![thx P0V](https://github.com/MAVProxyUser/P0VsRedHerring/raw/master/BigUps.jpg)
