@@ -75,16 +75,10 @@ if Gem.win_platform?
     # Check if Running as admin. 
 
     begin
-#        if started == 1
-            File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')            
-#        else
-#            require 'win32ole'
-#            shell = WIN32OLE.new('Shell.Application')
-#            shell.ShellExecute('c:\\RailsInstaller\\Ruby2.2.0\bin\ruby.exe', "#{__FILE__}", nil, 'runas')
-#            started = 1
-#        end
+        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')            
     rescue Errno::EACCES => e
         puts "You know nothing John Snow, Run as Administrator please! " + e.message
+        puts "Usage: runas /user:administrator ruby \"RedHerring.rb /data/.bin/grep grep\""
     end
 
 else
