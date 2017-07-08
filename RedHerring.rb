@@ -74,8 +74,8 @@ if Gem.win_platform?
     # Check if Running as admin. 
     begin
         File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
-    rescue Exception => e
-        puts "You know nothing John Snow " + e
+    rescue Errno::EACCES => e
+        puts "You know nothing John Snow " +e.message
     end
 
 else
