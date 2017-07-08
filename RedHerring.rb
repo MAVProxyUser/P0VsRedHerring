@@ -72,19 +72,19 @@ puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.leng
 if Gem.win_platform?
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
-    try
-        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a') {|f| f.write("test\n)}
-    catch
-        puts "You know nothing John Snow"
+    begin
+        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
+    rescue Exception => e
+        puts "You know nothing John Snow " + e
     end
 
 else
     # Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
     if ENV['USER'] == "root"
-    puts "Running as root... thanks!\n" 
+        puts "Running as root... thanks!\n" 
     else
         puts "Run as root please\n"
-      exit
+        exit
     end
 end
 
