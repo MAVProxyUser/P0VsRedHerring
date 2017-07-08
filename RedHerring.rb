@@ -72,12 +72,19 @@ puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.leng
 if Gem.win_platform?
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
+
     begin
+        if started = 1
+            File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
+            
+        else
+            next
+        end
+
+        started = 1
         require 'win32ole'
         shell = WIN32OLE.new('Shell.Application')
         shell.ShellExecute('c:\\RailsInstaller\\Ruby2.2.0\bin\ruby.exe', "#{__FILE__}", nil, 'runas')
-
-        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
 
     rescue Errno::EACCES => e
         puts "You know nothing John Snow, Run as Administrator please! " + e.message
