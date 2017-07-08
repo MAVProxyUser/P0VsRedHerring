@@ -73,11 +73,11 @@ if Gem.win_platform?
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
     begin
-        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
         require 'win32ole'
-
         shell = WIN32OLE.new('Shell.Application')
         shell.ShellExecute('path_to_ruby_program', nil, nil, 'runas')
+
+        File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
 
     rescue Errno::EACCES => e
         puts "You know nothing John Snow, Run as Administrator please! " + e.message
