@@ -76,17 +76,12 @@ if Gem.win_platform?
 
     begin
         if started == 1
-            File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
-            
+            File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')            
         else
-            return
+            require 'win32ole'
+            shell = WIN32OLE.new('Shell.Application')
+            shell.ShellExecute('c:\\RailsInstaller\\Ruby2.2.0\bin\ruby.exe', "#{__FILE__}", nil, 'runas')
         end
-
-        started = 1
-        require 'win32ole'
-        shell = WIN32OLE.new('Shell.Application')
-        shell.ShellExecute('c:\\RailsInstaller\\Ruby2.2.0\bin\ruby.exe', "#{__FILE__}", nil, 'runas')
-
     rescue Errno::EACCES => e
         puts "You know nothing John Snow, Run as Administrator please! " + e.message
     end
