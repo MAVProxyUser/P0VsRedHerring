@@ -73,7 +73,6 @@ started = 0
 if Gem.win_platform?
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
-    started = 1
 
     begin
         if started == 1
@@ -82,6 +81,7 @@ if Gem.win_platform?
             require 'win32ole'
             shell = WIN32OLE.new('Shell.Application')
             shell.ShellExecute('c:\\RailsInstaller\\Ruby2.2.0\bin\ruby.exe', "#{__FILE__}", nil, 'runas')
+            started = 1
         end
     rescue Errno::EACCES => e
         puts "You know nothing John Snow, Run as Administrator please! " + e.message
@@ -93,6 +93,7 @@ else
         puts "Running as root... thanks!\n" 
     else
         puts "Run as root please\n"
+
         exit
     end
 end
