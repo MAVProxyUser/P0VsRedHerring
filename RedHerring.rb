@@ -74,7 +74,7 @@ if Gem.win_platform?
     # Check if Running as admin. 
 
     begin
-        if started = 1
+        if started == 1
             File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')
             
         else
