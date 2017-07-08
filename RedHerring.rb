@@ -90,7 +90,22 @@ else
     exit
 end
 
-require 'net/ftp'
+begin
+  require 'colorize'
+  require 'net/http'
+  require 'net/ftp'
+rescue LoadError
+  puts "Please install colorize and net/http, and net/ftp via gem?" 
+end
+
+Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end # Old Beta Release Leak Control... you can remove this
+puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
+puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
+puts "Disabling such features may inadvertently disable others and cause unpredictable behaviour.\"".red
+puts " - Christian Struwe, head of European public policy at DJI".red
+puts "Press <enter> to continue".green
+$stdin.gets
+
 
 ftp = Net::FTP.new('192.168.42.2')
 ftp.passive = true
@@ -118,36 +133,7 @@ server.mount_proc '/api' do |req, res|
   res.body = '{"status":0,"version":"01.00.00.03","url":"http://localhost/flysafe_db_files/GetRoot","update":false}'
 end
 
-server.mount_proc '/flysafe_db_files' do |req, res|
-  res.body = File.read("fireworks.tar")
-#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
-#  system ("say '100% Complete means your write file took'")
-  system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
-  puts "Hopefully you dropped your file in a magic location!".red
-  ftp = Net::FTP.new('192.168.42.2')
-  ftp.passive = true
-  ftp.login("RedHerring","IsDaRealest!" )
-  begin
-  fireworks = ftp.ls('/upgrade/.bin')
-  if fireworks.grep("total 0")
-    puts "no herring present in /tmp, which is a good thing..."
-  else
-    puts fireworks
-  end
-
-  rescue Net::FTPPermError
-  puts "file exists"
-  end
-  ftp.close
-
-end
-
-server.mount_proc '/firmware_file' do |req, res|
-  res.body = File.read("fireworks.tar")
-#  system ("say 'undefined Update Failed means YOU failed... otherwise'")
-#  system ("say '100% Complete means your write file took'")
-  system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
-  puts "Hopefully you dropped your file in a magic location!".red
+def ftplist()
   # Remove this later and replace with a proper function def()
   ftp = Net::FTP.new('192.168.42.2')
   ftp.passive = true
@@ -164,6 +150,25 @@ server.mount_proc '/firmware_file' do |req, res|
   puts "file exists"
   end
   ftp.close
+  puts "undefined Update Failed means YOU failed... otherwise"
+  puts "100% Complete means your write file took"
+end
+
+server.mount_proc '/flysafe_db_files' do |req, res|
+  res.body = File.read("fireworks.tar")
+
+  system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
+
+  puts "Hopefully you dropped your file in a magic location!".red
+  ftplist()
+
+end
+
+server.mount_proc '/firmware_file' do |req, res|
+  res.body = File.read("fireworks.tar")
+  system("open https://www.youtube.com/watch?v=bhGfpwfae-k")
+  puts "Hopefully you dropped your file in a magic location!".red
+  ftplist()
 
 end
 
@@ -253,24 +258,6 @@ system("tar --append -pf fireworks.tar symlink/" + destfile)
 # root@wm220_dz_ap0002_v1:/ # ls -al /data/thx_darksimpson.sh  
 # -rw-r--r-- root     20             39 2017-07-01 23:50 thx_darksimpson.sh
 
-begin
-  require 'colorize'
-  require 'net/http'
-rescue LoadError
-  puts "Please run 'gem install colorize and net/http'" 
-end
-
-#system("osascript -e 'set Volume 4'")
-#system("say Please eyeball the following message from your equipment manufacturer")
-#system("say Press enter to continue")
-Net::HTTP.start("www.openpilotlegacy.org") do |http| resp = http.get("/RedHerring.txt") end # Old Beta Release Leak Control... you can remove this
-puts "Press <enter> after reading this comment from DJI, also verify you have 50% or more battery".green
-puts "\"DJI strongly discourages any attempt to defeat [their] safety systems, \nwhich are advisory and intended to facilitate compliance and safe operations by the average responsible person,".red
-puts "Disabling such features may inadvertently disable others and cause unpredictable behaviour.\"".red
-puts " - Christian Struwe, head of European public policy at DJI".red
-puts "Press <enter> to continue".green
-$stdin.gets
-
 # These are some hostnames known to be used with DJI Assistant 2 downloads that *may* be overwritable 
 #
 #127.0.0.1 ec2-54-165-147-148.compute-1.amazonaws.com
@@ -285,6 +272,7 @@ $stdin.gets
 #127.0.0.1 swsf.djicorp.com
 #127.0.0.1 server-52-84-64-153.ord51.r.cloudfront.net
 #127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net
+#127.0.0.1 flight-staging.aasky.net
 
 if File.readlines("/etc/hosts").grep(/flysafe\.aasky\.net/).size > 0
   puts "Flysafe redirection already in hosts file\n"
@@ -301,7 +289,7 @@ else
 end
 
 if File.readlines("/etc/hosts").grep(/server-54-192-27-106\.mxp4\.r\.cloudfront\.net/).size > 0
-  puts "Swsf amazonaws redirection already in hosts file\n"
+  puts "DJI firmware server for 1.1.2 redirection already in hosts file\n"
 else
   puts "Adding entry for DJI firmware server for 1.1.2 redirection to /etc/hosts"
   File.open("/etc/hosts", 'a') {|f| f.write("\n127.0.0.1 server-54-192-27-106.mxp4.r.cloudfront.net\n") }
@@ -357,6 +345,4 @@ trap("INT"){
   puts "https://www.youtube.com/watch?v=kWCQ4XDq4ng".blue
 }
 server.start
-
-
 
