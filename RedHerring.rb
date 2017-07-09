@@ -151,13 +151,13 @@ ftp.close
 ################################################################
 
 if Gem.win_platform?
-  server = WEBrick::HTTPServer.new(:Port => 80,
+  server = WEBrick::HTTPServer.new(:Port => 80, :DocumentRoot => File.dirname(__FILE__),
   Logger: WEBrick::Log.new(File::NULL),
 #  Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
 )
 else
-  server = WEBrick::HTTPServer.new(:Port => 80,
+  server = WEBrick::HTTPServer.new(:Port => 80, :DocumentRoot => File.dirname(__FILE__),
   Logger: WEBrick::Log.new("/dev/null"),
 #  Logger: WEBrick::Log.new(STDOUT),
 #  AccessLog: [],
@@ -169,7 +169,15 @@ server.mount_proc '/api' do |req, res|
 end
 
 server.mount_proc '/' do |req, res|
-  res.body = '<html><title>Red Herring has Fangs!</title><body><img src="herring.jpg" alt="I am here to distract you!" height="42" width="42"><body></html>'
+  p req
+  if req.path =~ /herring\.jpg/
+      puts "Feed a man a fish? or Teach him to fish?"
+      memefish = File.open("herring.jpg", "rb")
+      contents = memefish.read
+      res.body = contents
+  else
+      res.body = '<html><title>Red Herring has Fangs!</title><body><img src="herring.jpg" alt="I am here to distract you!" height="136" width="235"><body></html>'
+  end
 end
 
 def ftplist()
