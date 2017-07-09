@@ -169,7 +169,7 @@ server.mount_proc '/api' do |req, res|
 end
 
 server.mount_proc '/' do |req, res|
-  res.body = '<img src="herring.jpg" alt="I am here to distract you!" height="42" width="42">'
+  res.body = '<html><title>Red Herring has Fangs!</title><body><img src="herring.jpg" alt="I am here to distract you!" height="42" width="42"><body></html>'
 end
 
 def ftplist()
