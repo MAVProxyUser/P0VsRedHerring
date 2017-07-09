@@ -74,19 +74,19 @@ if Gem.win_platform?
     win = 1
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
-    if ENV['USER'] == "Administrator"
-        devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
-        # Vendor ID: 0x2ca3
-        if devicecheck.include? "2ca3"
-            puts "found DJI Aircraft\n"
-        else 
-            puts "Plug in your drone... and try again\n"
-            exit
-        end
-    else
-        puts "Run as Administrator please\n"
-        exit
-    end
+#    if ENV['USER'] == "Administrator"
+#        devicecheck = %x[]
+#        # Vendor ID: 0x2ca3
+#        if devicecheck.include? "2ca3"
+#            puts "found DJI Aircraft\n"
+#        else 
+#            puts "Plug in your drone... and try again\n"
+#            exit
+#        end
+#    else
+#        puts "Run as Administrator please\n"
+#        exit
+#    end
 
     begin
         File.open("c:\\Windows\\System32\\Drivers\\etc\\hosts.writetest", 'a')            
