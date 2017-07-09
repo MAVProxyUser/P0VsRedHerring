@@ -181,7 +181,6 @@ server.mount_proc '/' do |req, res|
 end
 
 def ftplist()
-  # Remove this later and replace with a proper function def()
   ftp = Net::FTP.new('192.168.42.2')
   ftp.passive = true
   ftp.login("RedHerring","IsDaRealest!" )
