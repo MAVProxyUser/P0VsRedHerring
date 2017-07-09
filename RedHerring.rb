@@ -66,8 +66,13 @@
 # Find your own easter eggs! 
 
 require 'webrick'
+import subprocess   
 
 puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
+
+def runcmd(cmd):
+    x = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    return x.communicate(subprocess.STDOUT)
 
 win = 0
 if Gem.win_platform?
