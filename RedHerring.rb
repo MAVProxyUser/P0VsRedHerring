@@ -391,12 +391,20 @@ end
 #Process.detach(pid)
 
 puts "In another window please type:" 
-puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".blue
-# c/Program Files (x86)/DJI Product/DJI Assistant 2/DJI Assistant 2.exe
+if win == 1
+    puts "c:\Program Files (x86)\DJI Product\DJI Assistant 2\DJI Assistant 2.exe --test_server
+else
+    puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".red
+end
 
 puts "or "
 puts "In another window please type:"
-puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
+if win == 1
+    puts "c:\Program Files (x86)\DJI Product\DJI Assistant 2\DJI Assistant 2.exe
+else
+    puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
+end
+
 puts "Release *may* come with a legend of versions and known good command line options".blue
 
 puts "Please select a connected device, and confirm the NFZ update\n".red
