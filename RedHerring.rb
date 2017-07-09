@@ -66,13 +66,8 @@
 # Find your own easter eggs! 
 
 require 'webrick'
-import subprocess   
 
 puts 'Usage: ruby RedHerring.rb <path_to_write_to> <file_to_write>' if ARGV.length == 0
-
-def runcmd(cmd):
-    x = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    return x.communicate(subprocess.STDOUT)
 
 win = 0
 if Gem.win_platform?
@@ -82,14 +77,14 @@ if Gem.win_platform?
 #    if ENV['USER'] == "Administrator"
 
         # Vendor ID: 0x2ca3
-        devices = runcmd("wmic path Win32_SerialPort get DeviceID, Name, PNPDeviceID | findstr 2CA")
-        if len(devices[0].split('\r\r\n')) > 0
-            print "Using first DJI device in the list: " + devices[0].split('\r\r\n')[0]
-            com = devices[0].split('\r\r\n')[0].split()[0]
-        else
-            print "Plug in your drone... and try again\n"
-            exit
-        end
+        devices = %x[wmic path Win32_SerialPort get DeviceID, Name, PNPDeviceID | findstr 2CA]
+#        if len(devices[0].split('\r\r\n')) > 0
+#            print "Using first DJI device in the list: " + devices[0].split('\r\r\n')[0]
+#            com = devices[0].split('\r\r\n')[0].split()[0]
+#        else
+#            print "Plug in your drone... and try again\n"
+#            exit
+#        end
 #    else
 #        puts "Run as Administrator please\n"
 #        exit
