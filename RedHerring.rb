@@ -75,14 +75,16 @@ if Gem.win_platform?
     puts "OK Windows users! I guess you can have a little soup!"
     # Check if Running as admin. 
 #    if ENV['USER'] == "Administrator"
-#        devicecheck = %x[]
-#        # Vendor ID: 0x2ca3
-#        if devicecheck.include? "2ca3"
-#            puts "found DJI Aircraft\n"
-#        else 
-#            puts "Plug in your drone... and try again\n"
-#            exit
-#        end
+
+        # Vendor ID: 0x2ca3
+        devices = runcmd("wmic path Win32_SerialPort get DeviceID, Name, PNPDeviceID | findstr 2CA")
+        if len(devices[0].split('\r\r\n')) > 0:
+            print "Using first DJI device in the list: " + devices[0].split('\r\r\n')[0]
+            com = devices[0].split('\r\r\n')[0].split()[0]
+        else
+            print "Plug in your drone... and try again\n"
+            exit
+        end
 #    else
 #        puts "Run as Administrator please\n"
 #        exit
