@@ -99,7 +99,7 @@ else
     # Check if Running as root, add hosts file entry for '127.0.0.1 flysafe.aasky.net'
     if ENV['USER'] == "root"
         puts "Running as root... thanks!\n" 
-        echo "Device check running" 
+        puts "Device check running" 
         devicecheck = %x[/usr/sbin/system_profiler SPUSBDataType | grep "DJI:" -A19]
         # Vendor ID: 0x2ca3
         if devicecheck.include? "2ca3"
@@ -166,6 +166,10 @@ end
 
 server.mount_proc '/api' do |req, res|
   res.body = '{"status":0,"version":"01.00.00.03","url":"http://localhost/flysafe_db_files/GetRoot","update":false}'
+end
+
+server.mount_proc '/' do |req, res|
+  res.body = '<img src="herring.jpg" alt="I am here to distract you!" height="42" width="42">'
 end
 
 def ftplist()
