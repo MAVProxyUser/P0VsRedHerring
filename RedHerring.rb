@@ -78,7 +78,7 @@ if Gem.win_platform?
 
         # Vendor ID: 0x2ca3
         devices = runcmd("wmic path Win32_SerialPort get DeviceID, Name, PNPDeviceID | findstr 2CA")
-        if len(devices[0].split('\r\r\n')) > 0:
+        if len(devices[0].split('\r\r\n')) > 0
             print "Using first DJI device in the list: " + devices[0].split('\r\r\n')[0]
             com = devices[0].split('\r\r\n')[0].split()[0]
         else
