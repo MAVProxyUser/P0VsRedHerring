@@ -405,7 +405,7 @@ end
 
 puts "In another window please type:" 
 if win == 1
-    puts "c:\Program Files (x86)\DJI Product\DJI Assistant 2\DJI Assistant 2.exe --test_server
+    puts "c:\\Program Files (x86)\\DJI Product\\DJI Assistant 2\\DJI Assistant 2.exe --test_server
 else
     puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant --test_server".red
 end
@@ -413,7 +413,7 @@ end
 puts "or "
 puts "In another window please type:"
 if win == 1
-    puts "c:\Program Files (x86)\DJI Product\DJI Assistant 2\DJI Assistant 2.exe
+    puts "c:\\Program Files (x86)\\DJI Product\\DJI Assistant 2\\DJI Assistant 2.exe
 else
     puts "sudo /Applications/Assistant.app/Contents/MacOS/Assistant" # depending on version
 end
