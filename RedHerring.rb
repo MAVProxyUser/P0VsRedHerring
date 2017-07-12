@@ -78,6 +78,7 @@ if Gem.win_platform?
 
         # Vendor ID: 0x2ca3
         devices = %x[wmic path Win32_SerialPort get DeviceID, Name, PNPDeviceID | findstr 2CA]
+        puts devices 
 #        if len(devices[0].split('\r\r\n')) > 0
 #            print "Using first DJI device in the list: " + devices[0].split('\r\r\n')[0]
 #            com = devices[0].split('\r\r\n')[0].split()[0]
@@ -132,7 +133,7 @@ puts " - Christian Struwe, head of European public policy at DJI".red
 puts "Press <enter> to continue".green
 $stdin.gets
 
-
+puts "Connecting to the drone and looking for old herrings..."
 ftp = Net::FTP.new('192.168.42.2')
 ftp.passive = true
 ftp.login("RedHerring","IsDaRealest!" )
