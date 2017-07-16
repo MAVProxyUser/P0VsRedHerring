@@ -13,7 +13,8 @@ adb_en.sh NonSecurePrivilege
 stop adbd 
 start adbd
 
-while true; do /system/xbin/busybox nc -l -p 1234 -e /system/bin/sh & done 
+#while true; do /system/xbin/busybox nc -l -p 1234 -e /system/bin/sh & done 
+/system/xbin/busybox nc -l -p 1234 -e /system/bin/sh
 
 
 
