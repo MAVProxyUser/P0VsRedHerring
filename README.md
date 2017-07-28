@@ -1,7 +1,10 @@
 # P0VsRedHerring
 "Luckily, there are underground 0day exploits for FTPD for path traversal." #FakeNews #DotDotWontPwn #JailBreak #DJI #Spark
 
-Don't leak this to anyone that won't appreciate it!
+Update: This vulnerability has been addressed in DJI Spark Aircraft Firmware: V 01.00.0500 
+https://forum.dji.com/thread-106245-1-1.html
+
+/system is now "ro" instead of "rw", and tar no longer follows hard or soft links, effectively neutering the original variant.
 
 Lets examine POV's claims and red herrings. I've been chasing them for over a month or so... They make complete sense now. 
 https://www.rcgroups.com/forums/showpost.php?p=36232471&postcount=15113
