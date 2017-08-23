@@ -4,6 +4,9 @@
 Update: This vulnerability has been addressed in DJI Spark Aircraft Firmware: V 01.00.0500 
 https://forum.dji.com/thread-106245-1-1.html
 
+Update: This vulnerability has been addressed in DJI Mavic Aircraft Firmware: V 01.03.1000
+
+
 /system is now "ro" instead of "rw", and tar no longer follows hard or soft links, effectively neutering the original variant.
 
 Lets examine POV's claims and red herrings. I've been chasing them for over a month or so... They make complete sense now. 
